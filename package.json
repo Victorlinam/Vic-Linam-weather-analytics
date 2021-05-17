@@ -1,0 +1,11 @@
+{
+  "name": "vic-linam-weather-analytics",
+  "private": true,
+  "workspaces": ["apps/*"],
+  "scripts": {
+    "setup": "npm --workspace apps/backend install && npm --workspace apps/frontend install && pip install -r apps/ai-service/requirements.txt",
+    "dev": "docker compose up --build",
+    "lint": "npm --workspace apps/frontend run lint && npm --workspace apps/backend run lint",
+    "test": "npm --workspace apps/backend run test"
+  }
+}

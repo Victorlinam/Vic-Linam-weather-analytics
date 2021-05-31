@@ -1,0 +1,14 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+
+enum Role { USER ADMIN ANALYST }
+model User { id String @id @default(cuid()) email String @unique passwordHash String role Role @default(USER) createdAt DateTime @default(now()) forecasts Forecast[] auditLogs AuditLog[] }
+model Location { id String @id @default(cuid()) name String lat Float lon Float records WeatherRecord[] forecasts Forecast[] }
+model WeatherRecord { id String @id @default(cuid()) locationId String timestamp DateTime tempC Float humidity Float rainfallMm Float windKph Float pressureHpa Float uvIndex Float airQuality Int location Location @relation(fields:[locationId], references:[id]) }
+model Forecast { id String @id @default(cuid()) userId String? locationId String issuedAt DateTime @default(now()) horizonDays Int confidence Float payload Json user User? @relation(fields:[userId], references:[id]) location Location @relation(fields:[locationId], references:[id]) }
+model Alert { id String @id @default(cuid()) severity String message String locationId String createdAt DateTime @default(now()) }
+model AIPrediction { id String @id @default(cuid()) locationId String riskScore Float anomalyScore Float summary String createdAt DateTime @default(now()) }
+model AnalyticsReport { id String @id @default(cuid()) title String payload Json generatedAt DateTime @default(now()) }
+model ApiLog { id String @id @default(cuid()) provider String endpoint String status Int latencyMs Int createdAt DateTime @default(now()) }
+model SystemMetric { id String @id @default(cuid()) metric String value Float timestamp DateTime @default(now()) }
+model AuditLog { id String @id @default(cuid()) userId String action String metadata Json createdAt DateTime @default(now()) user User @relation(fields:[userId], references:[id]) }
